@@ -173,7 +173,7 @@ Node.js ve Express ile güçlü, ölçeklenebilir API'ler geliştirebilirsiniz. 
       tags: ["css", "grid", "flexbox", "layout"],
       status: "published",
       coverImage:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=400&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1545670723-196ed0954986?w=800&h=400&fit=crop&q=80",
       content: `## Flexbox vs Grid
 
 CSS'te layout oluşturmanın iki modern yolu vardır: **Flexbox** ve **Grid**. İkisi de güçlüdür ama farklı senaryolarda parlar.
