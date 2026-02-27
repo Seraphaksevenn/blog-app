@@ -1,6 +1,5 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -15,22 +14,43 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    const result = await signIn("credentials", {
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-      redirect: false,
-    });
+    try {
+      // CSRF token al
+      const csrfRes = await fetch("/api/auth/csrf");
+      const { csrfToken } = await csrfRes.json();
 
-    setLoading(false);
+      // Login isteği gönder
+      const res = await fetch("/api/auth/callback/credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          csrfToken,
+          email,
+          password,
+          json: "true",
+        }),
+        redirect: "follow",
+      });
 
-    if (result?.error) {
-      setError("E-posta veya şifre hatalı.");
-      return;
+      const url = new URL(res.url);
+
+      // Hata varsa URL'de error parametresi olur
+      if (url.searchParams.has("error")) {
+        setError("E-posta veya şifre hatalı.");
+        setLoading(false);
+        return;
+      }
+
+      // Başarılı — admin'e yönlendir
+      router.push("/admin");
+      router.refresh();
+    } catch {
+      setError("Bir hata oluştu. Tekrar deneyin.");
+      setLoading(false);
     }
-
-    router.push("/admin");
-    router.refresh();
   }
 
   return (
